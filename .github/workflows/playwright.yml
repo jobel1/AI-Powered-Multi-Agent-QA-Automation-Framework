@@ -1,0 +1,77 @@
+name: Multi-Agent QA Automation
+
+on:
+  push:
+    branches: [main, master]
+
+  pull_request:
+    branches: [main, master]
+
+  workflow_dispatch:
+    
+permissions:
+  contents: read
+
+concurrency:
+  group:qa-${{ github.workflow}}-${{ github.ref}}
+  cancel-in-progress:true
+
+jobs:
+  playwright-tests:
+    name: Run Multi-Agent QA Tests
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 45
+
+    env:
+      CI: 'true'
+
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+
+      SHOPPER_USERNAME: ${{ secrets.SHOPPER_USERNAME }}
+      SHOPPER_PASSWORD: ${{ secrets.SHOPPER_PASSWORD }}
+
+    steps:
+
+      # 1. Download repository
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # 2. Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # 3. Install npm dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Install Playwright browser
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      # 5. Check TypeScript
+      - name: TypeScript type checking
+        run: npx tsc --noEmit
+
+      # 6. Run Playwright tests
+      - name: Run QA test suite
+        run: npx playwright test
+
+      # 7. Upload test reports
+      - name: Upload Playwright reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: multi-agent-qa-reports
+
+          path: |
+            playwright-report/
+            test-results/
+
+          if-no-files-found: warn
+          retention-days: 14
