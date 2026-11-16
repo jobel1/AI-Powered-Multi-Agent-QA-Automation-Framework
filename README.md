@@ -14,6 +14,51 @@ An AI-powered QA automation framework built with **TypeScript, Playwright, and G
 
 - Generates structured JSON and Playwright HTML reports.
 
+   ## Project Architecture
+
+```mermaid
+flowchart TD
+    A["GitHub Actions<br/>Push / Pull Request"] --> B["Playwright Test Runner"]
+    B --> C["Orchestrator Test"]
+    C --> D["Orchestrator Agent"]
+
+    D <--> E["AI Service"]
+    E <--> F["Google Gemini API"]
+
+    D --> G["Shopper Agent"]
+    D --> H["Attacker Agent"]
+    D --> I["Chaos Injector"]
+
+    E --> H
+
+    G --> J["Playwright Browser"]
+    H --> J
+    I --> J
+
+    J --> K["SauceDemo Application"]
+
+    J -. "Browser, console and network events" .-> L["Observer Agent"]
+    L --> M["Test Results & Observations"]
+
+    G --> M
+    H --> M
+    I --> M
+
+    M --> N["JSON Test Report"]
+    M --> O["Playwright HTML Report"]
+
+    N --> P["GitHub Actions Artifacts"]
+    O --> P
+
+    classDef ai fill:#e9e3ff,stroke:#7655c7,color:#241747
+    classDef agent fill:#dceeff,stroke:#3976b8,color:#102b45
+    classDef output fill:#e0f3e5,stroke:#45885a,color:#173b22
+
+    class E,F ai
+    class D,G,H,I,L agent
+    class N,O,P output
+```
+
 
   
 
