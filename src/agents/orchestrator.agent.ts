@@ -11,7 +11,7 @@ import { ChaosInjector } from '../utils/chaos-injector';
 import { Type } from '@google/genai';
 import { AIService } from '../AI/ai.service';
 
-const BASE_URL = 'https://www.saucedemo.com';
+//const BASE_URL = 'https://www.saucedemo.com';
 
 type ScenarioId =
   | 'shopper_purchase'
