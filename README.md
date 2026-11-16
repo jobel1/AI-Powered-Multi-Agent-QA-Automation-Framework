@@ -18,7 +18,7 @@ An AI-powered QA automation framework built with **TypeScript, Playwright, and G
 
 ```mermaid
 flowchart TD
-    A --> B["Playwright Test Runner"]
+    B["Playwright Test Runner"]
     B --> C["Orchestrator Test"]
     C --> D["Orchestrator Agent"]
 
